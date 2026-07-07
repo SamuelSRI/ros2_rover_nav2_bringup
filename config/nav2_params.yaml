@@ -97,23 +97,35 @@ local_costmap:
 
       robot_radius: 0.45
 
-      plugins: ["obstacle_layer", "inflation_layer"]
+      plugins: ["obstacle_layer_360", "traversability_layer", "inflation_layer"]
 
-      obstacle_layer:
+      obstacle_layer_360:
         plugin: "nav2_costmap_2d::ObstacleLayer"
         enabled: true
-        observation_sources: pointcloud
-        pointcloud:
-          topic: /local_cloud_filtered
-          max_obstacle_height: 1.50
-          min_obstacle_height: -0.20
+        observation_sources: lidar_360
+
+        lidar_360:
+          topic: /scan
+          data_type: "LaserScan"
           clearing: true
           marking: true
-          data_type: "PointCloud2"
           raytrace_max_range: 8.0
-          raytrace_min_range: 0.0
+          raytrace_min_range: 0.05
           obstacle_max_range: 6.0
-          obstacle_min_range: 0.0
+          obstacle_min_range: 0.05
+          max_obstacle_height: 1.50
+          min_obstacle_height: -0.20
+
+      traversability_layer:
+        plugin: "nav2_costmap_2d::StaticLayer"
+        enabled: true
+        map_topic: /traversability_grid
+        subscribe_to_updates: true
+        map_subscribe_transient_local: false
+        lethal_cost_threshold: 70
+        trinary_costmap: true
+        track_unknown_space: false
+        use_maximum: true
 
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
@@ -139,23 +151,35 @@ global_costmap:
 
       robot_radius: 0.45
 
-      plugins: ["obstacle_layer", "inflation_layer"]
+      plugins: ["obstacle_layer_360", "traversability_layer", "inflation_layer"]
 
-      obstacle_layer:
+      obstacle_layer_360:
         plugin: "nav2_costmap_2d::ObstacleLayer"
         enabled: true
-        observation_sources: pointcloud
-        pointcloud:
-          topic: /local_cloud_filtered
-          max_obstacle_height: 1.50
-          min_obstacle_height: -0.20
+        observation_sources: lidar_360
+
+        lidar_360:
+          topic: /scan
+          data_type: "LaserScan"
           clearing: true
           marking: true
-          data_type: "PointCloud2"
           raytrace_max_range: 8.0
-          raytrace_min_range: 0.0
+          raytrace_min_range: 0.05
           obstacle_max_range: 6.0
-          obstacle_min_range: 0.0
+          obstacle_min_range: 0.05
+          max_obstacle_height: 1.50
+          min_obstacle_height: -0.20
+
+      traversability_layer:
+        plugin: "nav2_costmap_2d::StaticLayer"
+        enabled: true
+        map_topic: /traversability_grid
+        subscribe_to_updates: true
+        map_subscribe_transient_local: false
+        lethal_cost_threshold: 70
+        trinary_costmap: true
+        track_unknown_space: false
+        use_maximum: true
 
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
