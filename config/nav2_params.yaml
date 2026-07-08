@@ -252,7 +252,7 @@ velocity_smoother:
 
     odom_topic: "/odometry/filtered"
     odom_duration: 0.1
-    deadband_velocity: [0.02, 0.0, 0.02]
+    deadband_velocity: [0.08, 0.0, 0.02]
     velocity_timeout: 1.0
 
     input_topic: "cmd_vel_nav"
