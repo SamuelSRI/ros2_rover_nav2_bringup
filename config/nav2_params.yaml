@@ -121,7 +121,7 @@ local_costmap:
       traversability_layer:
         plugin: "nav2_costmap_2d::StaticLayer"
         enabled: true
-        map_topic: /traversability_grid
+        map_topic: /persistent_traversability_grid
         subscribe_to_updates: true
         map_subscribe_transient_local: false
         lethal_cost_threshold: 70
