@@ -30,44 +30,46 @@ controller_server:
 
     general_goal_checker:
       plugin: "nav2_controller::SimpleGoalChecker"
-      xy_goal_tolerance: 0.10
-      yaw_goal_tolerance: 0.10
+      xy_goal_tolerance: 0.30
+      yaw_goal_tolerance: 0.30
       stateful: true
 
     FollowPath:
       plugin: "dwb_core::DWBLocalPlanner"
 
-      # Important : autorise vx = 0 pour tourner sur place.
-      min_vel_x: 0.0
+      min_vel_x: -0.40
       max_vel_x: 0.40
 
       min_vel_y: 0.0
       max_vel_y: 0.0
 
-      max_vel_theta: 0.60
+      min_vel_theta: -0.8
+      max_vel_theta: 0.8
 
-      min_speed_xy: 0.0
+      min_speed_xy: 0.10
       max_speed_xy: 0.40
-      min_speed_theta: 0.0
 
-      acc_lim_x: 0.30
+      min_speed_theta: 0.20
+      max_speed_theta: 0.80
+
+      acc_lim_x: 0.4
       acc_lim_y: 0.0
-      acc_lim_theta: 0.80
+      acc_lim_theta: 1.0
 
-      decel_lim_x: -0.30
+      decel_lim_x: -0.4
       decel_lim_y: 0.0
-      decel_lim_theta: -0.80
+      decel_lim_theta: -1.0
 
-      vx_samples: 15
+      vx_samples: 20
       vy_samples: 1
-      vtheta_samples: 30
+      vtheta_samples: 20
 
       sim_time: 2.0
       linear_granularity: 0.05
       angular_granularity: 0.025
-      transform_tolerance: 0.30
+      transform_tolerance: 0.70
 
-      xy_goal_tolerance: 0.20
+      xy_goal_tolerance: 0.30
       trans_stopped_velocity: 0.05
 
       short_circuit_trajectory_evaluation: true
@@ -118,11 +120,11 @@ local_costmap:
       height: 10
       resolution: 0.10
 
-      transform_tolerance: 0.3
+      transform_tolerance: 0.7
 
       # Rover environ 1.18 m x 0.80 m.
       # Marge de sécurité d'environ 5 cm.
-      footprint: "[[0.64, 0.45], [0.64, -0.45], [-0.64, -0.45], [-0.64, 0.45]]"
+      footprint: "[[0.64, 0.45], [0.64, -0.45], [-0.54, -0.45], [-0.54, 0.45]]"
 
       plugins:
         [
@@ -175,8 +177,8 @@ local_costmap:
         plugin: "nav2_costmap_2d::InflationLayer"
         enabled: true
 
-        inflation_radius: 0.55
-        cost_scaling_factor: 3.0
+        inflation_radius: 0.80
+        cost_scaling_factor: 2.0
 
       always_send_full_costmap: true
 
@@ -196,9 +198,9 @@ global_costmap:
       resolution: 0.05
 
       track_unknown_space: true
-      transform_tolerance: 0.30
+      transform_tolerance: 0.70
 
-      footprint: "[[0.64, 0.45], [0.64, -0.45], [-0.64, -0.45], [-0.64, 0.45]]"
+      footprint: "[[0.64, 0.45], [0.64, -0.45], [-0.54, -0.45], [-0.54, 0.45]]"
       footprint_padding: 0.02
 
       plugins:
@@ -249,8 +251,8 @@ global_costmap:
         plugin: "nav2_costmap_2d::InflationLayer"
         enabled: true
 
-        inflation_radius: 0.65
-        cost_scaling_factor: 3.0
+        inflation_radius: 0.90
+        cost_scaling_factor: 2.0
 
       always_send_full_costmap: true
 
@@ -291,7 +293,7 @@ behavior_server:
     local_frame: odom
     robot_base_frame: base_link
 
-    transform_tolerance: 0.3
+    transform_tolerance: 0.7
     cycle_frequency: 10.0
 
     behavior_plugins:
@@ -325,20 +327,20 @@ velocity_smoother:
 
     smoothing_frequency: 20.0
     scale_velocities: false
-    feedback: "CLOSED_LOOP"
+    feedback: "OPEN_LOOP"
 
-    max_velocity: [0.40, 0.0, 0.60]
-    min_velocity: [-0.20, 0.0, -0.60]
+    max_velocity: [0.40, 0.0, 0.80]
+    min_velocity: [-0.40, 0.0, -0.80]
 
-    max_accel: [0.30, 0.0, 0.80]
-    max_decel: [-0.30, 0.0, -0.80]
+    max_accel: [0.40, 0.0, 1.00]
+    max_decel: [-0.40, 0.0, -1.00]
 
     odom_topic: /odometry/local
-    odom_duration: 0.3
+    odom_duration: 0.1
 
-    deadband_velocity: [0.08, 0.0, 0.25]
+    deadband_velocity: [0.00, 0.00, 0.0]
 
-    velocity_timeout: 0.5
+    velocity_timeout: 1.0
 
 
 collision_monitor:
@@ -348,7 +350,7 @@ collision_monitor:
     base_frame_id: base_link
     odom_frame_id: odom
 
-    transform_tolerance: 0.30
+    transform_tolerance: 0.70
 
     cmd_vel_in_topic: cmd_vel_smoothed
     cmd_vel_out_topic: cmd_vel
@@ -365,7 +367,8 @@ collision_monitor:
       type: polygon
 
       # Environ 45 cm de sécurité devant le rover.
-      points: "[[1.10, 0.50], [1.10, -0.50], [-0.70, -0.50], [-0.70, 0.50]]"
+      points: "[[0.70, 0.45], [0.70, -0.45], [-0.69, -0.45], [-0.69, 0.45]]"
+
 
       action_type: stop
       min_points: 3
@@ -454,7 +457,7 @@ docking_server:
       costmap_topic: "local_costmap/costmap_raw"
       footprint_topic: "local_costmap/published_footprint"
 
-      transform_tolerance: 0.3
+      transform_tolerance: 0.7
       projection_time: 5.0
       simulation_step: 0.1
       dock_collision_threshold: 0.3
